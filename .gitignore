@@ -1,4 +1,4 @@
-token.txt
-bot.db
-.bat
-.sh
+bot/token.txt
+bot/bot.db
+bot/*.bat
+bot/*.sh
