@@ -442,11 +442,18 @@ def handle_check(message):
 
     bot.send_message(message.chat.id, f"Вы набрали {score} из {total_words} баллов. ({accuracy:.2f}% правильных ответов)")
     
-    
+
 # /define
 @bot.message_handler(commands=['define'])
 def handle_define(message):
-    arg = message.text.split()[1]
+    args = message.text.split()[1:]
+
+    if not args or '-' in message.text:
+        definition_usage = "Для получения определения английского слова используйте команду /define, за которой следует слово или индекс слова из вашего словаря. Например:\n\n`/define book` или `/define 1`"
+        bot.send_message(message.chat.id, definition_usage, parse_mode="Markdown")
+        return
+
+    arg = args[0]
 
     if arg.isdigit():
         word_index = int(arg)
@@ -468,8 +475,13 @@ def handle_define(message):
                 error_message = "В вашем словаре нет слов. Добавьте слова с помощью команды /add."
                 bot.send_message(message.chat.id, error_message)
                 return
+            if word_index < 1 or word_index > words_count:
+                error_message = "Запрошенный индекс слова находится за пределами вашего словаря."
+                bot.send_message(message.chat.id, error_message)
+                show_words_table(message)
+                return
 
-            cursor.execute(f"SELECT english_word FROM user_{message.from_user.id} LIMIT 1 OFFSET {word_index}")
+            cursor.execute(f"SELECT english_word FROM user_{message.from_user.id} LIMIT 1 OFFSET {word_index - 1}")
             row = cursor.fetchone()
             if row:
                 word = row[0]
@@ -480,7 +492,12 @@ def handle_define(message):
         finally:
             conn.close()
     else:
-        word = arg
+        word = arg.lower()
+        if not word.isalpha():
+            error_message = "Слово должно состоять только из символов латинского алфавита.\nИндексом может быть число от 1 до количества ваших слов."
+            bot.send_message(message.chat.id, error_message)
+            return
+
 
     url = f"https://api.dictionaryapi.dev/api/v2/entries/en/{word}"
 
