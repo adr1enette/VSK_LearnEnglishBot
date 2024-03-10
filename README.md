@@ -1,6 +1,6 @@
 # Бот для изучения английского 📚
 
-[![Бот для изучения английского](https://as1.ftcdn.net/v2/jpg/04/19/25/66/400_F_419256631_PKWn9Ge3XSb18Bwasf1MDn0hfd2nBBQR.jpg)](https://t.me/VSK_LearnEnglishBot)
+[![Бот для изучения английского](https://i.imgur.com/BwJAmdf.jpeg)](https://t.me/VSK_LearnEnglishBot)
 
 ## Команды
 
